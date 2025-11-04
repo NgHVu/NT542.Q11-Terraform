@@ -1,7 +1,4 @@
-# ===================================================================
-# 1. TẠO IAM ROLE CHO EC2 (Best Practice)
-# ===================================================================
-# (Phần này của bạn đã hoàn hảo, giữ nguyên)
+# 1. TẠO IAM ROLE CHO EC2
 resource "aws_iam_role" "web_ec2_role" {
   name = "${var.environment}-web-ec2-role"
 
@@ -33,39 +30,32 @@ resource "aws_iam_role_policy_attachment" "ssm" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# ===================================================================
-# 2. TẠO KHUÔN MÁY CHỦ (LAUNCH TEMPLATE)
-# ===================================================================
-# --- TỐI ƯU 1: Sử dụng Amazon Linux 2023 ---
+# 2. TẠO KHUÔN MÁY CHỦ
 data "aws_ami" "amazon_linux_2023" {
   most_recent = true
   owners      = ["amazon"]
 
   filter {
     name   = "name"
-    # Lọc AMI Amazon Linux 2023, kernel 6.1
     values = ["al2023-ami-*-kernel-6.1-x86_64"]
   }
 }
 
 resource "aws_launch_template" "web" {
   name_prefix            = "${var.environment}-web-"
-  image_id               = data.aws_ami.amazon_linux_2023.id # <-- THAY ĐỔI
+  image_id               = data.aws_ami.amazon_linux_2023.id 
   instance_type          = var.ec2_instance_class
   vpc_security_group_ids = [aws_security_group.web.id]
   iam_instance_profile {
     name = aws_iam_instance_profile.web_ec2_profile.name
   }
 
-  # --- TỐI ƯU 2: Bảo mật - Bắt buộc IMDSv2 ---
   metadata_options {
     http_endpoint               = "enabled"
-    http_tokens                 = "required" # <-- Dòng này BẮT BUỘC IMDSv2
+    http_tokens                 = "required" 
     http_put_response_hop_limit = 1
   }
 
-  # --- USER DATA (Cập nhật cho Amazon Linux 2023) ---
-  # Dùng 'dnf' thay vì 'yum'
   user_data = base64encode(<<-EOF
     #!/bin/bash
     dnf update -y
@@ -85,9 +75,7 @@ resource "aws_launch_template" "web" {
   }
 }
 
-# ===================================================================
-# 3. TẠO NHÓM TỰ ĐỘNG CO GIÃN (AUTO SCALING GROUP)
-# ===================================================================
+# 3. TẠO AUTO SCALING GROUP
 resource "aws_autoscaling_group" "web" {
   name_prefix = "${var.environment}-web-asg-"
 
@@ -109,22 +97,16 @@ resource "aws_autoscaling_group" "web" {
 
   depends_on = [aws_lb_target_group.web]
 
-  # --- SỬA LỖI & TỐI ƯU 3: Cập nhật cú pháp 'tags' ---
-  # Sử dụng CÁC KHỐI 'tag' (block) thay vì thuộc tính 'tags' (map)
-  # để có thể gán thẻ cho cả ASG và EC2 instances.
-
-  # Các thẻ (tags) này CHỈ gán cho Auto Scaling Group (ASG)
   tag {
     key                 = "Name"
     value               = "${var.environment}-web-asg"
-    propagate_at_launch = false # <-- 'false' nghĩa là chỉ gán cho ASG
+    propagate_at_launch = false 
   }
 
-  # Các thẻ (tags) này sẽ được gán cho CẢ ASG VÀ EC2 Instances
   tag {
     key                 = "Name"
     value               = "${var.environment}-web-instance"
-    propagate_at_launch = true # <-- 'true' nghĩa là gán cho cả EC2
+    propagate_at_launch = true 
   }
 
   tag {
