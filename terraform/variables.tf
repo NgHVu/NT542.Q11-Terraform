@@ -86,3 +86,24 @@ variable "private_subnet_cidrs_db" {
   }
 }
 
+# BIẾN (VARIABLES) CHO BẢO MẬT (SECURITY)
+variable "my_ip" {
+  description = "Địa chỉ IP public của máy để SSH. Thêm /32 vào cuối."
+  type        = string
+
+  validation {
+    condition     = can(regex("^([0-9]{1,3}\\.){3}[0-9]{1,3}\\/32$", var.my_ip))
+    error_message = "Giá trị 'my_ip' phải là một IP duy nhất có /32 (ví dụ: 1.2.3.4/32)."
+  }
+}
+
+variable "db_port" {
+  description = "Cổng (port) của cơ sở dữ liệu."
+  type        = number
+  default     = 3306 
+
+  validation {
+    condition     = var.db_port > 1024 && var.db_port < 65535
+    error_message = "Cổng CSDL phải là một số hợp lệ (ví dụ: 5432 hoặc 3306)."
+  }
+}
