@@ -48,14 +48,7 @@ resource "aws_security_group" "web" {
     security_groups = [aws_security_group.alb.id] 
     description     = "Allow traffic from ALB"
   }
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = [var.my_ip] 
-    description = "Allow SSH from My IP"
-  }
-
+  
   # --- Luồng ra (Egress) ---
   egress {
     from_port   = 0

@@ -39,6 +39,10 @@ resource "aws_db_instance" "main" {
   # --- Cấu hình cho Sandbox ---
   skip_final_snapshot = true  
   deletion_protection = false
+
+  depends_on = [
+    aws_iam_role_policy_attachment.rds_monitoring
+  ]
 }
 
 resource "aws_iam_role" "rds_monitoring" {
