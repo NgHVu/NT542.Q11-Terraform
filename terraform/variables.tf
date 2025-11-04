@@ -145,3 +145,28 @@ variable "db_engine_version" {
   default     = "16.2" 
 }
 
+# BIẾN (VARIABLES) CHO WEB TIER (EC2)
+
+variable "ec2_instance_class" {
+  description = "Loại máy chủ cho Web Tier."
+  type        = string
+  default     = "t3.micro"
+}
+
+variable "web_asg_min_size" {
+  description = "Số lượng máy chủ EC2 tối thiểu."
+  type        = number
+  default     = 2
+}
+
+variable "web_asg_max_size" {
+  description = "Số lượng máy chủ EC2 tối đa."
+  type        = number
+  default     = 4
+}
+
+variable "web_asg_desired_capacity" {
+  description = "Số lượng máy chủ EC2 mong muốn ban đầu."
+  type        = number
+  default     = 2
+}
