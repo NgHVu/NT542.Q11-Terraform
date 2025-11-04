@@ -100,10 +100,48 @@ variable "my_ip" {
 variable "db_port" {
   description = "Cổng (port) của cơ sở dữ liệu."
   type        = number
-  default     = 3306 
+  default     = 5432 
 
   validation {
     condition     = var.db_port > 1024 && var.db_port < 65535
-    error_message = "Cổng CSDL phải là một số hợp lệ (ví dụ: 5432 hoặc 3306)."
+    error_message = "Cổng CSDL phải là một số hợp lệ."
   }
 }
+
+# BIẾN (VARIABLES) CHO CƠ SỞ DỮ LIỆU (DATABASE)
+variable "db_name" {
+  description = "Tên của CSDL khởi tạo ban đầu."
+  type        = string
+  default     = "webappdb"
+}
+
+variable "db_username" {
+  description = "Tên đăng nhập cho CSDL."
+  type        = string
+  sensitive   = true 
+}
+
+variable "db_password" {
+  description = "Mật khẩu cho CSDL."
+  type        = string
+  sensitive   = true 
+}
+
+variable "db_instance_class" {
+  description = "Phiên bản Instance."
+  type        = string
+  default     = "db.t4g.micro"
+}
+
+variable "db_engine" {
+  description = "Loại CSDL."
+  type        = string
+  default     = "postgres" 
+}
+
+variable "db_engine_version" {
+  description = "Phiên bản CSDL."
+  type        = string
+  default     = "16.2" 
+}
+
