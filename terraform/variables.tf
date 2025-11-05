@@ -142,7 +142,7 @@ variable "db_engine" {
 variable "db_engine_version" {
   description = "Phiên bản CSDL."
   type        = string
-  default     = "16.2" 
+  default     = "16.3" 
 }
 
 # BIẾN (VARIABLES) CHO WEB TIER (EC2)
