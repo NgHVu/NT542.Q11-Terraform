@@ -1,7 +1,7 @@
 # 1. SECURITY GROUP CHO APPLICATION LOAD BALANCER (ALB)
 resource "aws_security_group" "alb" {
   name        = "${var.environment}-alb-sg"
-  description = "Cho phép traffic web (HTTP/HTTPS) từ Internet vào ALB."
+  description = "Cho phep traffic web (HTTP/HTTPS) tu Internet vao ALB"
   vpc_id      = aws_vpc.main.id 
 
   # --- Luồng vào (Ingress) ---
@@ -10,14 +10,14 @@ resource "aws_security_group" "alb" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTP from Internet"
+    description = "Cho phep HTTP tu Internet"
   }
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-    description = "Allow HTTPS from Internet"
+    description = "Cho phep HTTPS tu Internet"
   }
 
   # --- Luồng ra (Egress) ---
@@ -26,7 +26,7 @@ resource "aws_security_group" "alb" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = [var.vpc_cidr] 
-    description = "Allow ALB to talk to internal resources (e.g., Web Tier)"
+    description = "Cho phep ALB giao tiep voi cac tai nguyen noi bo"
   }
 
   tags = {
@@ -37,7 +37,7 @@ resource "aws_security_group" "alb" {
 # 2. SECURITY GROUP CHO WEB TIER (EC2 INSTANCES)
 resource "aws_security_group" "web" {
   name        = "${var.environment}-web-ec2-sg"
-  description = "Cho phép traffic từ ALB và SSH từ IP của bạn."
+  description = "Cho phep traffic tu ALB va SSH tu IP"
   vpc_id      = aws_vpc.main.id
 
   # --- Luồng vào (Ingress) ---
@@ -65,7 +65,7 @@ resource "aws_security_group" "web" {
 # 3. SECURITY GROUP CHO DATABASE TIER (RDS INSTANCE)
 resource "aws_security_group" "db" {
   name        = "${var.environment}-db-rds-sg"
-  description = "CHỈ cho phép traffic từ Web Tier (EC2) vào CSDL."
+  description = "Chi cho phep traffic tu Web Tier (EC2) vao CSDL"
   vpc_id      = aws_vpc.main.id
 
   # --- Luồng vào (Ingress) ---
@@ -74,7 +74,7 @@ resource "aws_security_group" "db" {
     to_port         = var.db_port
     protocol        = "tcp"
     security_groups = [aws_security_group.web.id] 
-    description     = "Allow traffic from Web EC2 instances"
+    description     = "Cho phep traffic tu Web EC2 instances"
   }
 
   # --- Luồng ra (Egress) ---
