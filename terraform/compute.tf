@@ -45,7 +45,6 @@ resource "aws_launch_template" "web" {
   name_prefix            = "${var.environment}-web-"
   image_id               = data.aws_ami.amazon_linux_2023.id 
   instance_type          = var.ec2_instance_class
-  vpc_security_group_ids = [aws_security_group.web.id]
   iam_instance_profile {
     name = aws_iam_instance_profile.web_ec2_profile.name
   }
@@ -68,6 +67,8 @@ resource "aws_launch_template" "web" {
 
   network_interfaces {
     associate_public_ip_address = false
+
+    security_groups = [aws_security_group.web.id]
   }
 
   tags = {
