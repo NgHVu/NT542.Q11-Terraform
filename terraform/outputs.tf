@@ -47,3 +47,8 @@ output "availability_zones" {
   value       = data.aws_availability_zones.available.names
 }
 
+# OUTPUT CHO KẾT QUẢ CUỐI CÙNG (ALB)
+output "alb_dns_name" {
+  description = "DNS name (URL) của Application Load Balancer."
+  value       = aws_lb.main.dns_name
+}
